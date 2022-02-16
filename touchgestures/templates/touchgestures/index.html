@@ -1,0 +1,157 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Touch Gestures Prototype</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{% static 'touchgestures/vendors/bootstrap/css/bootstrap.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'touchgestures/css/main.css' %}" />
+
+	<script src="{% static 'touchgestures/vendors/jquery/jquery-3.3.1.min.js' %}"></script>
+	<script src="{% static 'touchgestures/vendors/hammer/hammer.min.js' %}"></script>
+	<script src="{% static 'touchgestures/vendors/hammer/jquery.hammer.js' %}"></script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+
+	<style type="text/css">
+		body {
+			margin:0;
+			padding:0;
+		}
+
+		.box-container {
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.large-box {
+			width: 100%;
+			height: 300px;
+			background: #0d124a;
+			padding: 5px;
+			margin: 0 10px 10px 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.small-box {
+			width: 100px;
+			height: 100px;
+			background: #7ce6df;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.action-complete {
+			background: #ffffff;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<h3>Touch Gestures</h3>
+				<div class="box-container">
+					<div class="large-box">
+						<div class="small-box" id="rotate-box">Rotate</div>
+					</div>
+					<div class="large-box">
+						<div class="small-box" id="pinch-box">Pinch</div>
+					</div>
+					<div class="large-box">
+						<div class="small-box" id="press-box">Press</div>
+					</div>
+					<div class="large-box">
+						<div class="small-box" id="pan-box">Pan</div>
+					</div>
+					<div class="large-box">
+						<div class="small-box" id="tap-box">Tap</div>
+					</div>
+					<div class="large-box">
+						<div class="small-box" id="swipe-box">Swipe</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+    
+    $("#rotate-box").each(function () {
+      var ht = new Hammer(this);
+      ht.get('rotate').set({ enable: true });
+      ht.on("rotate", function(e) {
+        h = e.angle*4;
+        //$("#rotate-box").text(""+~~e.angle);
+        $("#rotate-box").css("background-color", "hsl("+h+"deg, 50%, 50%)");
+      });
+    });
+
+    $("#pinch-box").each(function () {
+
+      var size = 1;
+      var ht = new Hammer(this);
+      ht.get('pinch').set({ enable: true });
+      ht.on("pinch", function(e) {
+        $("#pinch-box").css("width","90%");
+        $("#pinch-box").css("height","90%");
+      });
+
+      ht.on("pinchend pinchcancel", function(e) {
+        $("#pinch-box").css("width","100px");
+        $("#pinch-box").css("height","100px");
+      });
+    });
+
+    $("#press-box").each(function () {
+      new Hammer(this).on("press", function(e) {
+        $("#press-box").hide();
+      });
+      new Hammer(this).on("pressup", function(e) {
+        $("#press-box").show();
+      });
+    });
+
+    $("#pan-box").each(function () {
+      var l = $("#pan-box").position().left;
+      var t = $("#pan-box").position().top;
+
+      new Hammer(this).on("panmove", function(e) {
+        $("#pan-box").css("position","absolute");
+        $("#pan-box").css("left",l+e.deltaX+"px");
+        $("#pan-box").css("top",t+e.deltaY+"px");
+      });
+
+      new Hammer(this).on("panend pancancel", function(e) {
+        $("#pan-box").css("position","absolute");
+        $("#pan-box").css("left",l+"px");
+        $("#pan-box").css("top",t+"px");
+      });
+    });
+
+	  $("#tap-box").each(function () {
+      new Hammer(this).on("tap", function() {
+        r = ~~(Math.random()*256);
+        g = ~~(Math.random()*256);
+        b = ~~(Math.random()*256);
+        $("#tap-box").css("background-color", "rgb("+r+","+g+","+b+")");
+      });
+    });
+
+    $("#swipe-box").each(function () {
+      new Hammer(this).on("swipe", function() {
+        console.log("swipe");
+        $("#swipe-box").css("width","90%")
+      });
+    });
+
+  </script>
+</body>
+</html>
