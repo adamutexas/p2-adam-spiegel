@@ -50,7 +50,7 @@
 
 			// color palette
 			var cp = {
-				history: ["#000000"], // black selected by default
+				history: ["#FFFFFF", "#000000"], // black selected by default
 				options: [],
 				$container: $('#color-palette')
 			}
@@ -115,8 +115,39 @@
 			// Set up the mandala interactivity.
       
       // set to false once you've defined "myGradientInteraction" as a new function (following a similar setup as myCustomInteraction)
-			init(true);
-		}
+			init(false);
+
+      function myGradientInteraction() {
+        var tool = new paper.Tool();
+        w = paper.view.size.width;
+        h = paper.view.size.height;
+        var rect = new paper.Rectangle(new paper.Point(0.25*w, 0.25*h), new paper.Point(0.75*w, 0.75*h));
+        var rpath = new paper.Path.Rectangle(rect);
+
+        rpath.fillColor = '#ff0000';
+        var begin = null;
+
+        tool.onMouseDown = function (event) {
+          begin = event.point;
+        }
+
+        tool.onMouseUp = function (event) {
+          if(begin != null) {
+            var end = event.point;
+            rpath.fillColor = {
+              gradient: {
+                stops: [cp.history[cp.history.length - 2],
+                        cp.history[cp.history.length - 1]]
+              },
+              origin: begin,
+              destination: end
+            }
+            begin = null;
+          }
+        }
+      }
+
+    }
 	</script>
 </head>
 <body>
