@@ -132,9 +132,12 @@
         }
 
         tool.onMouseUp = function (event) {
-          if(begin != null) {
-            var end = event.point;
-            rpath.fillColor = {
+          var end = event.point;
+          if(begin != null && begin != end && cp.history.length > 1) {
+            var hitrect = rpath.hitTest(begin, { tolerance: 1, fill: true })
+                          ||rpath.hitTest(end, { tolerance: 1, fill: true });
+
+            c = {
               gradient: {
                 stops: [cp.history[cp.history.length - 2],
                         cp.history[cp.history.length - 1]]
@@ -142,7 +145,14 @@
               origin: begin,
               destination: end
             }
-            begin = null;
+
+            if(hitrect) {
+              rpath.fillColor = c;
+              begin = null;
+            } else {
+              var hit = mandala.item.hitTest(begin, { tolerance: 1, fill: true });
+              if(hit) hit.item.fillColor = c;
+            }
           }
         }
       }

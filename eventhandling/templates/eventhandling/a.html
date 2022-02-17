@@ -77,8 +77,10 @@
     $( ".bg-orange.p2-border" ).hide();
   });
 
-  $( "#gradient-circle" ).on( "click", function() {
+  $( "#gradient-circle" ).hover( function() {
     $( "#gradient-circle" ).hide();
+  },function() {
+    //$( "#gradient-circle" ).show();
   });
 
   $( "button.btn" ).on( "click", function() {
